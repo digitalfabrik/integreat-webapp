@@ -2,6 +2,7 @@ import React from 'react'
 import cx from 'classnames'
 import { connect } from 'react-redux'
 import Spinner from 'react-spinkit'
+import { isEqual } from 'lodash/lang'
 
 import Error from 'components/Error'
 import style from './Fetcher.css'
@@ -24,14 +25,18 @@ function withFetcher (endpoint, hideError = false, hideSpinner = false) {
             'a undefined value!')
         }
 
-        this.props.dispatch(endpoint.requestAction(options, options))
+        this.setState({fetchPromise: this.props.dispatch(endpoint.requestAction(options, options))})
       }
 
       componentWillMount () {
         this.fetch(this.props.options)
       }
 
-      componentWillUpdate (nextProps) {
+      componentWillUpdate (nextProps, nextState) {
+        if (isEqual(this.state, nextState)) {
+          return
+        }
+
         if (endpoint.shouldRefetch(this.props.options, nextProps.options)) {
           this.fetch(nextProps.options)
         }
@@ -56,7 +61,10 @@ function withFetcher (endpoint, hideError = false, hideSpinner = false) {
           }
         }
 
-        return <WrappedComponent {...Object.assign({}, this.props, {[endpoint.stateName]: payload.data})}/>
+        return <WrappedComponent {...Object.assign({}, this.props, {
+          [endpoint.stateName]: payload.data,
+          fetchPromise: this.state.fetchPromise
+        })}/>
       }
     }
 

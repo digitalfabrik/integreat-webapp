@@ -30,7 +30,12 @@ class PageRedirector extends React.Component {
    * Redirect to the new Page
    */
   componentDidMount () {
-    this.props.dispatch(push(this.getUrl()))
+    this.props.fetchPromise.then((result) => {
+      const url = this.getUrl(result.payload.data)
+      if (url) {
+        this.props.dispatch(push(url))
+      }
+    })
   }
 
   acceptPage (page) {
@@ -60,9 +65,9 @@ class PageRedirector extends React.Component {
    * Build the url of the page with the pageId from props
    * @returns {string} url
    */
-  getUrl () {
+  getUrl (pages) {
     const out = {}
-    this.findPage('', this.props.pages, out)
+    this.findPage('', pages, out)
     return `/${this.props.location}/${this.props.language}${out.url}/`
   }
 
