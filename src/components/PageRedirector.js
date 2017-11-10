@@ -30,12 +30,10 @@ class PageRedirector extends React.Component {
    * Redirect to the new Page
    */
   componentDidMount () {
-    this.props.fetchPromise.then((result) => {
-      const url = this.getUrl(result.payload.data)
-      if (url) {
-        this.props.dispatch(push(url))
-      }
-    })
+    const url = this.getUrl(this.props.pages)
+    if (url) {
+      this.props.dispatch(push(url))
+    }
   }
 
   acceptPage (page) {
@@ -80,6 +78,10 @@ class PageRedirector extends React.Component {
   }
 }
 
-const mapStateToProps = (state) => ({pageId: state.router.query.id, location: state.router.params.location, language: state.router.params.language})
+const mapStateToProps = (state) => ({
+  pageId: state.router.query.id,
+  location: state.router.params.location,
+  language: state.router.params.language
+})
 
 export default compose(connect(mapStateToProps), withFetcher(PAGE_ENDPOINT))(PageRedirector)

@@ -25,15 +25,21 @@ function withFetcher (endpoint, hideError = false, hideSpinner = false) {
             'a undefined value!')
         }
 
-        this.setState({fetchPromise: this.props.dispatch(endpoint.requestAction(options, options))})
+        this.props.dispatch(endpoint.requestAction(options, options)).then((result) => {
+          if (!result[1] || !result[1].payload) {
+            return
+          }
+          return this.setState({fetchedData: result[1].payload.data})
+        })
       }
 
       componentWillMount () {
+        this.setState({})
         this.fetch(this.props.options)
       }
 
       componentWillUpdate (nextProps, nextState) {
-        if (isEqual(this.state, nextState)) {
+        if (!isEqual(this.state, nextState)) {
           return
         }
 
@@ -53,7 +59,7 @@ function withFetcher (endpoint, hideError = false, hideSpinner = false) {
           return <Error className={cx(style.loading, this.props.className)} error={payload.error}/>
         }
 
-        if (!payload.ready()) {
+        if (!this.state.fetchedData) {
           if (!hideSpinner) {
             return <Spinner className={cx(style.loading, this.props.className)} name='line-scale-party'/>
           } else {
@@ -62,8 +68,7 @@ function withFetcher (endpoint, hideError = false, hideSpinner = false) {
         }
 
         return <WrappedComponent {...Object.assign({}, this.props, {
-          [endpoint.stateName]: payload.data,
-          fetchPromise: this.state.fetchPromise
+          [endpoint.stateName]: this.state.fetchedData
         })}/>
       }
     }
