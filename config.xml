@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='utf-8'?>
+<widget id="de.integreatapp" version="1.0.0">
+  <hook type="before_prepare" src="hooks/build.sh"/>
+  <name>Integreat</name>
+  <description>Integreat WebApp</description>
+  <author email="ammann@integreat-app.de" href="https://integreat-app.de">
+    WebApp Team
+  </author>
+  <content src="index.html"/>
+  <access origin="*"/>
+  <allow-navigation href="*"/>
+  <allow-intent href="http://*/*"/>
+  <allow-intent href="https://*/*"/>
+  <allow-intent href="tel:*"/>
+  <allow-intent href="sms:*"/>
+  <allow-intent href="mailto:*"/>
+  <allow-intent href="geo:*"/>
+  <preference name="DisallowOverscroll" value="true"/>
+  <platform name="android">
+    <allow-intent href="market:*"/>
+    <preference name="android-minSdkVersion" value="14"/>
+  </platform>
+  <engine name="android" spec="^6.3.0"/>
+  <plugin name="cordova-plugin-whitelist" spec="^1.3.3"/>
+</widget>

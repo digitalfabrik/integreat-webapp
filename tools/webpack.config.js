@@ -6,7 +6,7 @@ const pkg = require('../package.json')
 const getVersion = require('git-repo-version')
 const StyleLintPlugin = require('stylelint-webpack-plugin')
 
-const DIST = '../public/dist'
+const DIST = '../www/dist'
 const isDebug = global.DEBUG === false ? false : !process.argv.includes('--release')
 const isVerbose = process.argv.includes('--verbose') || process.argv.includes('-v')
 const useHMR = !!global.HMR // Hot Module Replacement (HMR)
@@ -16,7 +16,7 @@ const babelConfig = Object.assign({}, pkg.babel, {
   presets: pkg.babel.presets.map(x => x === 'latest' ? ['latest', {es2015: {modules: false}}] : x)
 })
 
-// Webpack configuration (main.js => public/dist/main.{hash}.js)
+// Webpack configuration (main.js => www/dist/main.{hash}.js)
 // http://webpack.github.io/docs/configuration.html
 const config = {
   resolve: {
@@ -80,13 +80,13 @@ const config = {
       minimize: !isDebug
     }),
     new WorkBoxPlugin({
-      globDirectory: 'public',
+      globDirectory: 'www',
       clientsClaim: true,
       skipWaiting: true,
       globPatterns: ['**/*.{js,css,png,jpg,html,woff}'],
-      swDest: 'public/sw.js',
+      swDest: 'www/sw.js',
       modifyUrlPrefix: {
-        '/public': '/'
+        '/www': '/'
       },
       runtimeCaching: [{
         urlPattern: /.*cms.integreat-app.de\/.*/,
