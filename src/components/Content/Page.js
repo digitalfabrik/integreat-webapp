@@ -6,7 +6,10 @@ import RemoteContent from 'components/UIComponents/RemoteContent'
 
 class Page extends React.Component {
   static propTypes = {
-    page: PropTypes.object.isRequired
+    page: PropTypes.shape({
+      title: PropTypes.string.isRequired,
+      content: PropTypes.string.isRequired
+    }).isRequired
   }
 
   render () {
