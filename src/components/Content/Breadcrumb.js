@@ -9,7 +9,7 @@ import withFetcher from 'endpoints/withFetcher'
 
 import style from './Breadcrumb.css'
 
-class Breadcrumb extends React.Component {
+export class Breadcrumb extends React.Component {
   static propTypes = {
     hierarchy: PropTypes.instanceOf(Hierarchy).isRequired,
     location: PropTypes.string.isRequired,
