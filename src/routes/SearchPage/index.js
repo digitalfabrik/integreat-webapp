@@ -5,8 +5,8 @@ import { connect } from 'react-redux'
 import normalizeUrl from 'normalize-url'
 import compose from 'lodash/fp/compose'
 
-import ContentList from 'components/Content/ContentList'
-import Search from 'components/Search/Search'
+import ContentList from 'components/Content/CategoriesContent/ContentList'
+import SearchInput from 'components/UIComponents/SearchInput'
 
 import style from './style.css'
 
@@ -60,10 +60,9 @@ class SearchPage extends React.Component {
 
     return (
       <div>
-        <Search className={style.searchSpacing}
-                filterText={this.state.filterText}
-                onFilterTextChange={(filterText) => this.setState({filterText: (filterText)})}
-        />
+        <SearchInput className={style.searchSpacing}
+                     filterText={this.state.filterText}
+                     onFilterTextChange={(filterText) => this.setState({filterText: (filterText)})} />
         <ContentList pages={pages}/>
       </div>
     )

@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import style from './TitledContentList.css'
 import PageModel from 'endpoints/models/PageModel'
 import ContentList from './ContentList'
-import RemoteContent from './RemoteContent'
+import RemoteContent from 'components/UIComponents/RemoteContent'
 
 class TitledContentList extends React.Component {
   static propTypes = {

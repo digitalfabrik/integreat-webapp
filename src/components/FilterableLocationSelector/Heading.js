@@ -3,7 +3,7 @@ import React from 'react'
 import LocationBig from './assets/LocationBig.svg'
 import style from './Heading.css'
 import { translate } from 'react-i18next'
-import Caption from '../Content/Caption'
+import Caption from 'components/UIComponents/Caption'
 
 class Heading extends React.Component {
   render () {

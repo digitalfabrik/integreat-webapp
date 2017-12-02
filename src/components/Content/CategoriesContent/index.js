@@ -13,12 +13,12 @@ import Hierarchy from 'routes/LocationPage/Hierarchy'
 import EVENTS_ENDPOINT from 'endpoints/events'
 import withFetcher from 'endpoints/withFetcher'
 
-import Page from './Page'
+import Page from '../Page'
 import TitledCategoriesTable from './TitledCategoriesTable'
 import style from './index.css'
 import TitledContentList from './TitledContentList'
-import EventSnippet from './EventSnippet'
-import Navigation from '../../Navigation'
+import EventSnippet from '../EventsContent/EventSnippet'
+import Navigation from 'Navigation'
 
 class Content extends React.Component {
   static propTypes = {

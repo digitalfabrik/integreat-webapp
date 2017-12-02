@@ -6,7 +6,7 @@ import { Link } from 'redux-little-router'
 import PageModel from 'endpoints/models/PageModel'
 import LOCATIONS_ENDPOINT from 'endpoints/location'
 import withFetcher from 'endpoints/withFetcher'
-import Caption from './Caption'
+import Caption from 'components/UIComponents/Caption'
 
 import style from './TitledCategoriesTable.css'
 
