@@ -13,7 +13,7 @@ import EVENTS_ENDPOINT from 'endpoints/events'
 import withFetcher from 'endpoints/withFetcher'
 
 import Page from '../Page'
-import TitledCategoriesTable from './CategoryTiles'
+import CategoryTiles from './CategoryTiles'
 import style from './index.css'
 import SecondLevelCategoryList from './SecondLevelCategoryList'
 import EventSnippet from '../EventsContent/EventSnippet'
@@ -46,7 +46,7 @@ class Content extends React.Component {
     if (hierarchy.isRoot()) {
       return <div>
         {this.hasEvents() && <EventSnippet events={this.props.events} navigation={navigation}/>}
-        <TitledCategoriesTable page={page}/>
+        <CategoryTiles page={page}/>
         {!this.hasEvents() && <Row className={style.noEvents}>{t('common:currentlyNoEvents')}</Row>}
       </div>
     } else {
