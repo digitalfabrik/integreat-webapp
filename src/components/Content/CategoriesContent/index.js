@@ -4,7 +4,6 @@ import { translate } from 'react-i18next'
 import { connect } from 'react-redux'
 import { Row } from 'react-flexbox-grid'
 import { isEmpty } from 'lodash/lang'
-import normalizeUrl from 'normalize-url'
 import compose from 'lodash/fp/compose'
 
 import EventModel from 'endpoints/models/EventModel'
@@ -14,9 +13,9 @@ import EVENTS_ENDPOINT from 'endpoints/events'
 import withFetcher from 'endpoints/withFetcher'
 
 import Page from '../Page'
-import TitledCategoriesTable from './TitledCategoriesTable'
+import TitledCategoriesTable from './CategoryTiles'
 import style from './index.css'
-import TitledContentList from './TitledContentList'
+import SecondLevelCategoryList from './SecondLevelCategoryList'
 import EventSnippet from '../EventsContent/EventSnippet'
 import Navigation from 'Navigation'
 
@@ -44,19 +43,14 @@ class Content extends React.Component {
       return <Page page={page}/>
     }
 
-    const url = normalizeUrl(this.props.url, {removeTrailingSlash: true})
-    const base = url + hierarchy.path()
-
-    const pages = page.children.map((page) => ({page, url: `${base}/${page.id}`}))
-
-    if (hierarchy.root()) {
+    if (hierarchy.isRoot()) {
       return <div>
         {this.hasEvents() && <EventSnippet events={this.props.events} navigation={navigation}/>}
-        <TitledCategoriesTable pages={pages} parentPage={page}/>
+        <TitledCategoriesTable page={page}/>
         {!this.hasEvents() && <Row className={style.noEvents}>{t('common:currentlyNoEvents')}</Row>}
       </div>
     } else {
-      return <TitledContentList parentPage={page} pages={pages}/>
+      return <SecondLevelCategoryList page={page} />
     }
   }
 }
