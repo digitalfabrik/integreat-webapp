@@ -1,0 +1,77 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ContentList should render 1`] = `
+<div
+  className="list"
+>
+  <a
+    href="/augsburg/de/page2"
+    onClick={[Function]}
+    target={undefined}
+  >
+    <div
+      className="row"
+    >
+      <div
+        className="elementImage element"
+      >
+        <img
+          className="image"
+          src={null}
+        />
+      </div>
+      <div
+        className="elementText"
+      >
+        Page2
+      </div>
+    </div>
+  </a>
+  <a
+    href="/augsburg/de/page3"
+    onClick={[Function]}
+    target={undefined}
+  >
+    <div
+      className="row"
+    >
+      <div
+        className="elementImage element"
+      >
+        <img
+          className="image"
+          src={null}
+        />
+      </div>
+      <div
+        className="elementText"
+      >
+        Page3
+      </div>
+    </div>
+  </a>
+  <a
+    href="/augsburg/de/page3/page4"
+    onClick={[Function]}
+    target={undefined}
+  >
+    <div
+      className="row"
+    >
+      <div
+        className="elementImage element"
+      >
+        <img
+          className="image"
+          src={null}
+        />
+      </div>
+      <div
+        className="elementText"
+      >
+        Page4
+      </div>
+    </div>
+  </a>
+</div>
+`;
