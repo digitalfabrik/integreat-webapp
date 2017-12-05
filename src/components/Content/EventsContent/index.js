@@ -5,9 +5,9 @@ import { translate } from 'react-i18next'
 import { connect } from 'react-redux'
 import { isEmpty } from 'lodash'
 
-import EventModel from '../../endpoints/models/EventModel'
-import style from './Events.css'
-import RemoteContent from './RemoteContent'
+import EventModel from 'endpoints/models/EventModel'
+import style from './style.css'
+import RemoteContent from 'components/UIComponents/RemoteContent'
 
 class Events extends React.Component {
   static propTypes = {

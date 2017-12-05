@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import Events from '../../components/Content/Events'
+import Events from '../../components/Content/EventsContent'
 import EventModel from 'endpoints/models/EventModel'
 import EVENTS_ENDPOINT from 'endpoints/events'
 import withFetcher from 'endpoints/withFetcher'

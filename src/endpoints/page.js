@@ -1,4 +1,4 @@
-import { filter, find, forEach } from 'lodash/collection'
+import { find, forEach } from 'lodash/collection'
 
 import EndpointBuilder from './EndpointBuilder'
 
@@ -16,7 +16,7 @@ export default new EndpointBuilder('pages')
           id,
           numericId,
           title: page.title,
-          parent: page.parent,
+          parentNumericId: page.parent,
           content: page.content,
           thumbnail: page.thumbnail,
           order: page.order,
@@ -24,15 +24,19 @@ export default new EndpointBuilder('pages')
         })
       })
 
-    // Set children
+    const baseUrl = `/${urlParams.location}/${urlParams.language}`
+    const pageTree = new PageModel({numericId: 0, id: 'rootId', title: urlParams.location, url: baseUrl})
+    pages.push(pageTree)
+
+    // Assign children relations
     forEach(pages, page => {
-      const parent = find(pages, p => p.numericId === page.parent)
+      const parent = find(pages, p => p.numericId === page.parentNumericId)
       if (parent) {
         parent.addChild(page)
+        page.setParent(parent)
       }
     })
 
-    const children = filter(pages, (page) => page.parent === 0)
-    return new PageModel({numericId: 0, id: 'rootId', title: urlParams.location, children})
+    return pageTree
   })
   .build()

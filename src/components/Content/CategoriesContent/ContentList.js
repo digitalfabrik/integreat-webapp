@@ -7,15 +7,14 @@ import PageModel from 'endpoints/models/PageModel'
 
 import IconPlaceholder from './assets/IconPlaceholder.svg'
 
-class SecondOrderCategory extends React.Component {
+class CategoryListItem extends React.Component {
   static propTypes = {
-    page: PropTypes.instanceOf(PageModel).isRequired,
-    url: PropTypes.string.isRequired
+    page: PropTypes.instanceOf(PageModel).isRequired
   }
 
   render () {
     return (
-      <Link href={this.props.url}>
+      <Link href={this.props.page.url}>
         <div className={style.row}>
           <img className={style.categoryThumbnail} src={this.props.page.thumbnail || IconPlaceholder}/>
           <div className={style.categoryCaption}>{this.props.page.title}</div>
@@ -27,16 +26,13 @@ class SecondOrderCategory extends React.Component {
 
 class ContentList extends React.Component {
   static propTypes = {
-    pages: PropTypes.arrayOf(PropTypes.shape({
-      page: PropTypes.instanceOf(PageModel).isRequired,
-      url: PropTypes.string.isRequired
-    })).isRequired
+    pages: PropTypes.arrayOf(PropTypes.instanceOf(PageModel)).isRequired
   }
 
   render () {
     return (
       <div className={style.list}>
-        { this.props.pages.map(({ page, url }) => <SecondOrderCategory key={url} url={url} page={page} />) }
+        { this.props.pages.map((page) => <CategoryListItem key={page.numericId} page={page} />) }
       </div>
     )
   }

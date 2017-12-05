@@ -7,7 +7,7 @@ import FilterableLocationSelector from '../index'
 import store from 'store'
 import { mount } from 'enzyme'
 import LocationSelector from 'components/FilterableLocationSelector/LocationSelector'
-import Search from 'components/Search/Search'
+import Search from 'components/UIComponents/SearchInput'
 
 jest.mock('react-i18next')
 

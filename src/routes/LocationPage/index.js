@@ -4,10 +4,10 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import compose from 'lodash/fp/compose'
 
-import Content from 'components/Content'
-import Breadcrumb from 'components/Content/Breadcrumb'
+import CategoriesContent from 'components/Content/CategoriesContent'
+import Breadcrumb from 'components/Content/CategoriesContent/Breadcrumb'
 import Error from 'components/Error'
-import PdfButton from 'components/Content/PdfButton'
+import PdfButton from 'components/UIComponents/PdfButton'
 import withFetcher from 'endpoints/withFetcher'
 import PAGE_ENDPOINT from 'endpoints/page'
 
@@ -87,7 +87,7 @@ class LocationPage extends React.Component {
         language={this.props.language}
         location={this.props.location}
       />
-      <Content url={url} hierarchy={hierarchy}/>
+      <CategoriesContent url={url} hierarchy={hierarchy}/>
       <PdfButton href={this.getPdfFetchPath()}/>
     </div>
   }

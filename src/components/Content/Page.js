@@ -1,12 +1,15 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import Caption from './Caption'
-import RemoteContent from './RemoteContent'
+import Caption from 'components/UIComponents/Caption'
+import RemoteContent from 'components/UIComponents/RemoteContent'
 
 class Page extends React.Component {
   static propTypes = {
-    page: PropTypes.object.isRequired
+    page: PropTypes.shape({
+      title: PropTypes.string.isRequired,
+      content: PropTypes.string.isRequired
+    }).isRequired
   }
 
   render () {

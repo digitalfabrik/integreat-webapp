@@ -15,7 +15,7 @@ class Hierarchy {
   /**
    * Finds the current page which should be rendered based on {@link this.props.path}
    * The page can be accessed by calling {@link Hierarchy.top()}
-   * @return {*} The model to renders
+   * @return {*} The model to render
    */
   build (rootPage) {
     let error = null
@@ -44,21 +44,6 @@ class Hierarchy {
     return error
   }
 
-  /**
-   * Maps the pages which represent this hierarchy
-   *
-   * @param fn The mapper function which takes the page and the path
-   */
-  map (fn) {
-    let path = ''
-    return this.pages.map((page) => {
-      if (page.numericId !== 0) {
-        path += '/' + page.id
-      }
-      return fn(page, path)
-    })
-  }
-
   path () {
     return normalizeUrl('/' + this._code.join('/'), {removeTrailingSlash: true})
   }
@@ -78,7 +63,7 @@ class Hierarchy {
   /**
    * @returns {*} true if this hierarchy is empty
    */
-  root () {
+  isRoot () {
     return isEmpty(this._code)
   }
 }
