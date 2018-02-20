@@ -13,6 +13,8 @@ import PdfFetcherPage from 'routes/pdf-fetcher/containers/PdfFetcherPage'
 import MainDisclaimerPage from 'routes/main-disclaimer/components/MainDisclaimerPage'
 import LandingPage from 'routes/landing/containers/LandingPage'
 import CategoriesPage from 'routes/categories/containers/CategoriesPage'
+import ExtrasPage from 'routes/extras/containers/ExtrasPage'
+import SprungbrettPage from 'routes/extras/containers/SprungbrettPage'
 
 /**
  * todo: Test and document in WEBAPP-90
@@ -46,6 +48,12 @@ class RouterFragment extends React.Component {
             {/* Matches /augsburg/de/fetch-pdf/* -> Redirect */}
             <Fragment forRoute='/fetch-pdf'>
               <Layout><PdfFetcherPage /></Layout>
+            </Fragment>
+            <Fragment forRoute='/extras/sprungbrett'>
+              <LocationLayout><SprungbrettPage /></LocationLayout>
+            </Fragment>
+            <Fragment forRoute='/extras'>
+              <LocationLayout><ExtrasPage /></LocationLayout>
             </Fragment>
             {/* Matches /augsburg/de/* -> Content */}
             <Fragment forNoMatch>

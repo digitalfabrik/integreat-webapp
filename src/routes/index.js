@@ -16,6 +16,12 @@ export default {
       },
       '/fetch-pdf': {
         title: 'FetchPdf page'
+      },
+      '/extras/sprungbrett': {
+        title: 'Sprungbrett page'
+      },
+      '/extras': {
+        title: 'Extras page'
       }
     },
     '/(:language(/))': {
