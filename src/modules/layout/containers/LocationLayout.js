@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import compose from 'lodash/fp/compose'
 
 import LocationModel from 'modules/endpoint/models/LocationModel'
+import EventModel from 'modules/endpoint/models/EventModel'
 import withFetcher from 'modules/endpoint/hocs/withFetcher'
 
 import GeneralHeader from '../components/GeneralHeader'
@@ -20,7 +21,8 @@ export class LocationLayout extends React.Component {
     locations: PropTypes.arrayOf(PropTypes.instanceOf(LocationModel)).isRequired,
     currentPath: PropTypes.string.isRequired,
     viewportSmall: PropTypes.bool.isRequired,
-    children: PropTypes.node
+    children: PropTypes.node,
+    events: PropTypes.arrayOf(PropTypes.instanceOf(EventModel)).isRequired
   }
 
   getCurrentLocation () {
@@ -33,12 +35,13 @@ export class LocationLayout extends React.Component {
       return <Layout header={<GeneralHeader />}
                      footer={<GeneralFooter />}>{this.props.children}</Layout>
     }
-
     const {currentPath, matchRoute} = this.props
     return <Layout header={<LocationHeader viewportSmall={this.props.viewportSmall}
                                            locationModel={locationModel}
                                            currentPath={currentPath}
-                                           matchRoute={matchRoute} language={this.props.language} />}
+                                           matchRoute={matchRoute}
+                                           language={this.props.language}
+                                           eventCount={this.props.events.length} />}
                    footer={<LocationFooter matchRoute={matchRoute} location={this.props.location}
                                            language={this.props.language} />}>
       {this.props.children}
@@ -50,10 +53,12 @@ const mapStateToProps = state => ({
   currentPath: state.router.route,
   location: state.router.params.location,
   language: state.router.params.language,
-  viewportSmall: state.viewport.is.small
+  viewportSmall: state.viewport.is.small,
+  events: state.events
 })
 
 export default compose(
   connect(mapStateToProps),
-  withFetcher('locations', null, true)
+  withFetcher('locations', null, true),
+  withFetcher('events')
 )(LocationLayout)
