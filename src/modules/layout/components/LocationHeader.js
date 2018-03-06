@@ -81,7 +81,7 @@ class LocationHeader extends React.Component {
         selected: isEventsSelected(),
         text: t('news'),
         active: isEventsActive(),
-        tooltip: t('news')
+        tooltip: t('noNews')
       })
 
     return [extras, categories, events].filter(isEnabled => isEnabled)
@@ -97,4 +97,4 @@ class LocationHeader extends React.Component {
   }
 }
 
-export default translate('app')(LocationHeader)
+export default translate('layout')(LocationHeader)

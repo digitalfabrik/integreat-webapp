@@ -23,6 +23,7 @@
 
 .navigation-item.inactive-navigation-item {
   opacity: 0.5;
+  cursor: default;
 }
 
 .navigation-item.selected-navigation-item {
