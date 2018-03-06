@@ -22,7 +22,7 @@ class HeaderMenuBar extends React.Component {
     return <div
       className={cx(this.props.className, style.navigationBar, isEmpty(this.props.items) ? style.hidden : '')}>
       {this.props.items.map(item => (
-        <ConditionalLink active={item.active} data-tip={item.tooltip}
+        <ConditionalLink active={item.active} data-tip={!item.active ? item.tooltip : ''}
                          key={item.text}
                          className={cx(style.navigationItem, !item.active ? style.inactiveNavigationItem : (item.selected ? style.selectedNavigationItem : ''))}
                          href={item.href}>{item.text}
