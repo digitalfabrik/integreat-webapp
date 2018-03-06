@@ -38,7 +38,9 @@ exports[`Header should match snapshot with largeViewport 1`] = `
           HeaderNavigationItem {
             "_active": undefined,
             "_href": "/nav1",
+            "_selected": undefined,
             "_text": undefined,
+            "_tooltip": undefined,
           },
         ]
       }
@@ -85,7 +87,9 @@ exports[`Header should match snapshot with smallViewport 1`] = `
           HeaderNavigationItem {
             "_active": undefined,
             "_href": "/nav1",
+            "_selected": undefined,
             "_text": undefined,
+            "_tooltip": undefined,
           },
         ]
       }

@@ -5,19 +5,25 @@ exports[`LocationHeader NavigationItems should be empty, if extras and news are 
 exports[`LocationHeader NavigationItems should highlight categories if route corresponds 1`] = `
 Array [
   HeaderNavigationItem {
-    "_active": false,
+    "_active": true,
     "_href": "/",
+    "_selected": false,
     "_text": "app:extras",
+    "_tooltip": "",
   },
   HeaderNavigationItem {
     "_active": true,
     "_href": "/location1/de",
+    "_selected": true,
     "_text": "app:categories",
+    "_tooltip": "",
   },
   HeaderNavigationItem {
     "_active": false,
     "_href": "/location1/de/events",
+    "_selected": false,
     "_text": "app:news",
+    "_tooltip": "app:news",
   },
 ]
 `;
@@ -25,19 +31,25 @@ Array [
 exports[`LocationHeader NavigationItems should highlight events if route corresponds 1`] = `
 Array [
   HeaderNavigationItem {
-    "_active": false,
+    "_active": true,
     "_href": "/",
+    "_selected": false,
     "_text": "app:extras",
-  },
-  HeaderNavigationItem {
-    "_active": false,
-    "_href": "/location1/de",
-    "_text": "app:categories",
+    "_tooltip": "",
   },
   HeaderNavigationItem {
     "_active": true,
+    "_href": "/location1/de",
+    "_selected": false,
+    "_text": "app:categories",
+    "_tooltip": "",
+  },
+  HeaderNavigationItem {
+    "_active": false,
     "_href": "/location1/de/events",
+    "_selected": true,
     "_text": "app:news",
+    "_tooltip": "app:news",
   },
 ]
 `;
@@ -45,14 +57,18 @@ Array [
 exports[`LocationHeader NavigationItems should show categories, if extras or news are enabled 1`] = `
 Array [
   HeaderNavigationItem {
-    "_active": false,
+    "_active": true,
     "_href": "/",
+    "_selected": false,
     "_text": "app:extras",
+    "_tooltip": "",
   },
   HeaderNavigationItem {
-    "_active": false,
+    "_active": true,
     "_href": "/location1/de",
+    "_selected": false,
     "_text": "app:categories",
+    "_tooltip": "",
   },
 ]
 `;
@@ -60,14 +76,18 @@ Array [
 exports[`LocationHeader NavigationItems should show categories, if extras or news are enabled 2`] = `
 Array [
   HeaderNavigationItem {
-    "_active": false,
+    "_active": true,
     "_href": "/location1/de",
+    "_selected": false,
     "_text": "app:categories",
+    "_tooltip": "",
   },
   HeaderNavigationItem {
     "_active": false,
     "_href": "/location1/de/events",
+    "_selected": false,
     "_text": "app:news",
+    "_tooltip": "app:news",
   },
 ]
 `;
@@ -75,19 +95,25 @@ Array [
 exports[`LocationHeader NavigationItems should show extras, categories, events in this order 1`] = `
 Array [
   HeaderNavigationItem {
-    "_active": false,
+    "_active": true,
     "_href": "/",
+    "_selected": false,
     "_text": "app:extras",
+    "_tooltip": "",
   },
   HeaderNavigationItem {
-    "_active": false,
+    "_active": true,
     "_href": "/location1/de",
+    "_selected": false,
     "_text": "app:categories",
+    "_tooltip": "",
   },
   HeaderNavigationItem {
     "_active": false,
     "_href": "/location1/de/events",
+    "_selected": false,
     "_text": "app:news",
+    "_tooltip": "app:news",
   },
 ]
 `;
@@ -117,19 +143,25 @@ exports[`LocationHeader should match snapshot 1`] = `
   navigationItems={
     Array [
       HeaderNavigationItem {
-        "_active": false,
+        "_active": true,
         "_href": "/",
+        "_selected": false,
         "_text": "app:extras",
+        "_tooltip": "",
       },
       HeaderNavigationItem {
-        "_active": false,
+        "_active": true,
         "_href": "/location1/de",
+        "_selected": false,
         "_text": "app:categories",
+        "_tooltip": "",
       },
       HeaderNavigationItem {
         "_active": false,
         "_href": "/location1/de/events",
+        "_selected": false,
         "_text": "app:news",
+        "_tooltip": "app:news",
       },
     ]
   }
