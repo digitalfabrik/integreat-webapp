@@ -2,7 +2,7 @@
 import React from 'react'
 import { mount } from 'enzyme'
 
-import ConditionalLink, { DisabledLink } from '../ConditionalLink'
+import ConditionalLink, { InactiveLink } from '../ConditionalLink'
 import { Link } from 'redux-little-router'
 import { Provider } from 'react-redux'
 import configureMockStore from 'redux-mock-store'
@@ -22,9 +22,9 @@ describe('ConditionalLink', () => {
     expect(link.props()).toEqual({prob: 'value', href: '/augsburg/de'})
   })
 
-  it('should render a DisabledLink if inactive', () => {
+  it('should render a InactiveLink if inactive', () => {
     const tree = mount(<ConditionalLink prob='value' active={false} />)
-    const disabledLink = tree.find(DisabledLink)
+    const disabledLink = tree.find(InactiveLink)
     expect(disabledLink.length).not.toBe(0)
     expect(disabledLink.props()).toEqual({prob: 'value'})
   })
