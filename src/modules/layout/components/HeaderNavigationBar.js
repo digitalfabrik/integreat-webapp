@@ -6,7 +6,7 @@ import { isEmpty } from 'lodash/lang'
 
 import style from './HeaderNavigationBar.css'
 import HeaderNavigationItem from '../HeaderNavigationItem'
-import ConditionalLink from '../../app/containers/ConditionalLink'
+import ConditionalLink from '../../common/components/ConditionalLink'
 
 /**
  * Designed to work with Header. In the MenuBar you can display textual links. Should be used for navigating as a
