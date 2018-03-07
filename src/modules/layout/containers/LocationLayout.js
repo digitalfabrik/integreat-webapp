@@ -53,7 +53,7 @@ const mapStateToProps = state => ({
   currentPath: state.router.route,
   location: state.router.params.location,
   language: state.router.params.language,
-  viewportSmall: state.viewport.is.small,
+  viewportSmall: state.viewport.is.small
 })
 
 export default compose(

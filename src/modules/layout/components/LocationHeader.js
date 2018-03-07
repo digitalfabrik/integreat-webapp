@@ -62,7 +62,7 @@ class LocationHeader extends React.Component {
         href: '/',
         selected: isExtrasSelected(),
         text: t('extras'),
-        active: true,
+        active: true
       })
 
     const categories = isCategoriesEnabled() &&
@@ -70,7 +70,7 @@ class LocationHeader extends React.Component {
         href: matchRoute(CategoriesPage).stringify(currentParams),
         selected: isCategoriesSelected(),
         text: t('categories'),
-        active: true,
+        active: true
       })
 
     const events = isEventsEnabled() &&
