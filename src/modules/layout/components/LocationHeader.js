@@ -63,7 +63,6 @@ class LocationHeader extends React.Component {
         selected: isExtrasSelected(),
         text: t('extras'),
         active: true,
-        tooltip: ''
       })
 
     const categories = isCategoriesEnabled() &&
@@ -72,7 +71,6 @@ class LocationHeader extends React.Component {
         selected: isCategoriesSelected(),
         text: t('categories'),
         active: true,
-        tooltip: ''
       })
 
     const events = isEventsEnabled() &&

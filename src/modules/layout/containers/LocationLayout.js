@@ -54,7 +54,6 @@ const mapStateToProps = state => ({
   location: state.router.params.location,
   language: state.router.params.language,
   viewportSmall: state.viewport.is.small,
-  events: state.events
 })
 
 export default compose(

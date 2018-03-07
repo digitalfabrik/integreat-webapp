@@ -14,6 +14,12 @@ export class DisabledLink extends React.Component {
  */
 const omitActive = mapProps(props => omit(props, 'active'))
 
+/**
+ * Component ConditionalLink.
+ * If prop.active === true, returns a redux-little-router Link
+ * else: returns a DisabledLink (has the same LAF, but is not clickable)
+ * In both cases the returned component does not have props.active set.
+ */
 export default branch(
   props => props.active,
   renderComponent(omitActive(Link)),

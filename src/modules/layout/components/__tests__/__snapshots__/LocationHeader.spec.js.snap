@@ -9,14 +9,14 @@ Array [
     "_href": "/",
     "_selected": false,
     "_text": "layout:extras",
-    "_tooltip": "",
+    "_tooltip": undefined,
   },
   HeaderNavigationItem {
     "_active": true,
     "_href": "/location1/de",
     "_selected": true,
     "_text": "layout:categories",
-    "_tooltip": "",
+    "_tooltip": undefined,
   },
   HeaderNavigationItem {
     "_active": false,
@@ -35,14 +35,14 @@ Array [
     "_href": "/",
     "_selected": false,
     "_text": "layout:extras",
-    "_tooltip": "",
+    "_tooltip": undefined,
   },
   HeaderNavigationItem {
     "_active": true,
     "_href": "/location1/de",
     "_selected": false,
     "_text": "layout:categories",
-    "_tooltip": "",
+    "_tooltip": undefined,
   },
   HeaderNavigationItem {
     "_active": false,
@@ -61,14 +61,14 @@ Array [
     "_href": "/",
     "_selected": false,
     "_text": "layout:extras",
-    "_tooltip": "",
+    "_tooltip": undefined,
   },
   HeaderNavigationItem {
     "_active": true,
     "_href": "/location1/de",
     "_selected": false,
     "_text": "layout:categories",
-    "_tooltip": "",
+    "_tooltip": undefined,
   },
 ]
 `;
@@ -80,7 +80,7 @@ Array [
     "_href": "/location1/de",
     "_selected": false,
     "_text": "layout:categories",
-    "_tooltip": "",
+    "_tooltip": undefined,
   },
   HeaderNavigationItem {
     "_active": false,
@@ -99,14 +99,14 @@ Array [
     "_href": "/",
     "_selected": false,
     "_text": "layout:extras",
-    "_tooltip": "",
+    "_tooltip": undefined,
   },
   HeaderNavigationItem {
     "_active": true,
     "_href": "/location1/de",
     "_selected": false,
     "_text": "layout:categories",
-    "_tooltip": "",
+    "_tooltip": undefined,
   },
   HeaderNavigationItem {
     "_active": false,
@@ -147,14 +147,14 @@ exports[`LocationHeader should match snapshot 1`] = `
         "_href": "/",
         "_selected": false,
         "_text": "layout:extras",
-        "_tooltip": "",
+        "_tooltip": undefined,
       },
       HeaderNavigationItem {
         "_active": true,
         "_href": "/location1/de",
         "_selected": false,
         "_text": "layout:categories",
-        "_tooltip": "",
+        "_tooltip": undefined,
       },
       HeaderNavigationItem {
         "_active": false,
