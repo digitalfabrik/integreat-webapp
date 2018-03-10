@@ -4,7 +4,6 @@ import React, { Fragment } from 'react'
 import { translate } from 'react-i18next'
 import compose from 'lodash/fp/compose'
 import { connect } from 'react-redux'
-import withFetcher from 'modules/endpoint/hocs/withFetcher'
 
 import LanguageSelector from 'modules/common/containers/LanguageSelector'
 import setLanguageChangeUrls from 'modules/language/actions/setLanguageChangeUrls'
@@ -51,10 +50,11 @@ export class LanguageFailure extends React.PureComponent<Props> {
   }
 
   render () {
+    const {languages, t} = this.props
     return <Fragment>
       <Caption title={this.getTitle()} />
-      <p className={style.chooseLanguage}>{this.props.t('common:chooseYourLanguage')}</p>
-      <LanguageSelector verticalLayout />
+      <p className={style.chooseLanguage}>{t('common:chooseYourLanguage')}</p>
+      <LanguageSelector languages={languages} verticalLayout />
     </Fragment>
   }
 }
@@ -69,7 +69,5 @@ const mapStateToProps = state => ({
 
 export default compose(
   connect(mapStateToProps, mapDispatchToProps),
-  withFetcher('locations'),
-  withFetcher('languages'),
   translate('common')
 )(LanguageFailure)

@@ -7,14 +7,11 @@ import DisclaimerPage from 'routes/disclaimer/containers/DisclaimerPage'
 import LandingPage from 'routes/landing/containers/LandingPage'
 import EventsPage from 'routes/events/containers/EventsPage'
 import Route from './Route'
+import Failure from '../common/components/Failure'
 
 const createRouteConfig = () => [
   new Route({
-    path: '/'
-  }),
-  new Route({
-    id: LandingPage,
-    path: '/:language(/)'
+    path: '/(:location)'
   }),
   new Route({
     id: SearchPage,
@@ -43,6 +40,14 @@ const createRouteConfig = () => [
   new Route({
     id: MainDisclaimerPage,
     path: '/disclaimer'
+  }),
+  new Route({
+    id: LandingPage,
+    path: '/:language(/)'
+  }),
+  new Route({
+    id: Failure,
+    path: '/*'
   })
 ]
 

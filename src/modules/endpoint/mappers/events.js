@@ -1,13 +1,8 @@
-import moment from 'moment'
-import { apiUrl } from '../constants'
-import EndpointBuilder from '../EndpointBuilder'
 import EventModel from '../models/EventModel'
+import moment from 'moment/moment'
 
-export default new EndpointBuilder('events')
-  .withStateToUrlMapper(state => `${apiUrl}/${state.router.params.location}` +
-    `/${state.router.params.language}/wp-json/extensions/v0/modified_content/events?since=1970-01-01T00:00:00Z`)
-  .withMapper(json => json
-    .filter(event => event.status === 'publish')
+function eventsMapper (json) {
+  return json.filter(event => event.status === 'publish')
     .map(event => new EventModel({
       id: event.id,
       title: event.title,
@@ -28,5 +23,6 @@ export default new EndpointBuilder('events')
       if (event1.startDate.isAfter(event2.startDate)) { return 1 }
       return 0
     })
-  )
-  .build()
+}
+
+export default eventsMapper

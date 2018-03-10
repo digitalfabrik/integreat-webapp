@@ -1,17 +1,18 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import compose from 'lodash/fp/compose'
 import { connect } from 'react-redux'
 
-import withFetcher from 'modules/endpoint/hocs/withFetcher'
 import setLanguageChangeUrls from 'modules/language/actions/setLanguageChangeUrls'
 
-import SprungbrettPage from './SprungbrettPage'
+import SprungbrettList from '../components/SprungbrettList'
 import TileModel from 'modules/common/models/TileModel'
 import Tiles from 'modules/common/components/Tiles'
 import ExtraModel from 'modules/endpoint/models/ExtraModel'
 import LanguageModel from 'modules/endpoint/models/LanguageModel'
 import Failure from '../../../modules/common/components/Failure'
+import withFetcher from '../../../modules/endpoint/hocs/withFetcher'
+import { sprungbrettUrlMapper } from '../../../modules/endpoint/urlMappers'
+import sprungbrettMapper from '../../../modules/endpoint/mappers/sprungbrett'
 
 const SPRUNGBRETT_EXTRA = 'sprungbrett'
 
@@ -58,9 +59,10 @@ export class ExtrasPage extends React.Component {
 
   getContent () {
     const sprungbrett = this.props.extras.find(extra => extra.alias === SPRUNGBRETT_EXTRA)
+    const SprungbrettPageWithFetcher = withFetcher('jobs', sprungbrettUrlMapper, sprungbrettMapper, {url: sprungbrett.path})(SprungbrettList)
 
     if (this.props.extra === SPRUNGBRETT_EXTRA && sprungbrett) {
-      return <SprungbrettPage title={sprungbrett.name} />
+      return <SprungbrettPageWithFetcher title={sprungbrett.name} />
     } else if (this.props.extra) {
       // we currently only implement the sprungbrett extra, so there is no other valid extra path
       return <Failure error={'not-found:page.notFound'} />
@@ -84,8 +86,4 @@ const mapDispatchToProps = dispatch => ({
   setLanguageChangeUrls: (mapLanguageToPath, languages) => dispatch(setLanguageChangeUrls(mapLanguageToPath, languages))
 })
 
-export default compose(
-  connect(mapStateToProps, mapDispatchToProps),
-  withFetcher('extras'),
-  withFetcher('languages')
-)(ExtrasPage)
+export default connect(mapStateToProps, mapDispatchToProps)(ExtrasPage)
