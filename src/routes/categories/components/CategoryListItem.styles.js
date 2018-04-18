@@ -4,6 +4,10 @@ import Link from 'redux-first-router-link'
 
 export const Row = styled.div`
   margin: 20px 0;
+  
+  & > * {
+    width: 100%;
+  }
 `
 
 export const CategoryThumbnail = styled.img`
@@ -14,10 +18,27 @@ export const CategoryThumbnail = styled.img`
   object-fit: contain;
 `
 
+export const SubCategory = styled.div`
+  text-align: end;
+  
+  & > * {
+    width: calc(100% - 66px);
+    text-align: start;
+    
+    @media ${props => props.theme.dimensions.smallViewport} {
+      width: 100%;
+    }
+  }
+`
+
 export const SubCategoryThumbnail = CategoryThumbnail.extend`
   width: 26px;
   height: 26px;
-  padding: 5px 15px;
+  padding: 5px 0;
+  
+  @media ${props => props.theme.dimensions.smallViewport} {
+    padding: 5px 15px;
+  }  
 `
 export const SubCategoryThumbnailDiv = SubCategoryThumbnail.withComponent('div')
 
@@ -37,8 +58,7 @@ export const SubCategoryCaption = CategoryCaption.extend`
 `
 
 export const StyledLink = styled(Link)`
-  display: flex;
-  width: 100%;
+  display: inline-flex;
   align-items: center;
   margin: 0 auto;
 `

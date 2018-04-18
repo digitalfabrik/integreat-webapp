@@ -8,7 +8,7 @@ import {
   CategoryCaption,
   CategoryThumbnail, Row,
   StyledLink, SubCategoryCaption, SubCategoryThumbnail,
-  SubCategoryThumbnailDiv
+  SubCategoryThumbnailDiv, SubCategory
 } from './CategoryListItem.styles'
 
 type Props = {
@@ -24,16 +24,16 @@ type Props = {
 class CategoryListItem extends React.Component<Props> {
   getChildren () {
     return this.props.children.map(child =>
-      <div key={child.id}>
+      <SubCategory key={child.id}>
         <StyledLink to={child.url}>
           {
             child.thumbnail
               ? <SubCategoryThumbnail src={child.thumbnail} />
               : <SubCategoryThumbnailDiv />
           }
-          <SubCategoryCaption>{child.title}</SubCategoryCaption>
+          <SubCategoryCaption search={''}>{child.title}</SubCategoryCaption>
         </StyledLink>
-      </div>
+      </SubCategory>
     )
   }
 
