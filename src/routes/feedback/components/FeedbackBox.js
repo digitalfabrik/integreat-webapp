@@ -6,7 +6,6 @@ import 'react-dropdown/style.css'
 import CityModel from '../../../modules/endpoint/models/CityModel'
 import { translate } from 'react-i18next'
 import styled from 'styled-components'
-import Dropdown from 'react-dropdown'
 import FeedbackEndpoint, {
   CATEGORIES_FEEDBACK_TYPE,
   DEFAULT_FEEDBACK_LANGUAGE,
@@ -24,6 +23,11 @@ import { EVENTS_ROUTE } from '../../../modules/app/routes/events'
 import { EXTRAS_ROUTE } from '../../../modules/app/routes/extras'
 import { SEARCH_ROUTE } from '../../../modules/app/routes/search'
 import { DISCLAIMER_ROUTE } from '../../../modules/app/routes/disclaimer'
+import FeedbackHeader from './FeedbackHeader'
+import FeedbackComment from './FeedbackComment'
+import type { LocationState } from 'redux-first-router'
+import { goToFeedback } from '../../../modules/app/routes/feedback'
+import FeedbackDropdownItem from '../FeedbackDropdownItem'
 
 const StyledFeedbackBox = styled.div`
   display: flex;
@@ -38,28 +42,8 @@ const StyledFeedbackBox = styled.div`
   font-size: ${props => props.theme.fonts.contentFontSize};
 `
 
-const Header = styled.div`
-  display: flex;
-  width: 100%;
-  flex-direction: row;
-  justify-content: space-between;
-`
-
-const CloseButton = styled(CleanLink)`
-  font-size: 2rem;
-`
-
-const Title = styled.div`
-  padding: 15px 0 10px;
-  font-size: ${props => props.theme.fonts.subTitleFontSize};
-`
-
-const Description = styled.div`
+export const Description = styled.div`
   padding: 10px 0 5px;
-`
-
-const CommentField = styled.textarea`
-  resize: none;
 `
 
 const SubmitButton = styled(CleanLink)`
@@ -71,23 +55,14 @@ const SubmitButton = styled(CleanLink)`
   border-radius: 0.25em;
 `
 
-type FeedbackDropdownType = {
-  value: string,
-  feedbackType: ?string,
-  label: string
-}
-
 type PropsType = {
   cities: Array<CityModel>,
-  city: string,
-  language: string,
-  id?: number,
   title?: string,
   alias?: string,
+  id?: number,
   query?: string,
-  route: string,
   isPositiveRatingSelected: boolean,
-  pathname: string,
+  location: LocationState,
   isOpen: boolean,
   commentMessageOverride: ?string,
   hideHeader: boolean,
@@ -95,12 +70,12 @@ type PropsType = {
 }
 
 type StateType = {
-  feedbackOptions: Array<FeedbackDropdownType>,
-  selectedFeedbackOption: FeedbackDropdownType,
+  feedbackOptions: Array<FeedbackDropdownItem>,
+  selectedFeedbackOption: FeedbackDropdownItem,
   comment: string
 }
 
-class FeedbackBox extends React.Component<PropsType, StateType> {
+export class FeedbackBox extends React.Component<PropsType, StateType> {
   static defaultProps = {
     hideHeader: false
   }
@@ -110,9 +85,9 @@ class FeedbackBox extends React.Component<PropsType, StateType> {
     this.state = {feedbackOptions: feedbackOptions, selectedFeedbackOption: feedbackOptions[0], comment: ''}
   }
 
-  onCommentChanged = (event: {target: {value: string}}) => this.setState({comment: event.target.value})
+  onCommentChanged = (event: SyntheticInputEvent<HTMLTextAreaElement>) => this.setState({comment: event.target.value})
 
-  onFeedbackOptionChanged = (selectedDropdown: FeedbackDropdownType) => {
+  onFeedbackOptionChanged = (selectedDropdown: FeedbackDropdownItem) => {
     this.setState({selectedFeedbackOption: selectedDropdown})
   }
 
@@ -130,9 +105,9 @@ class FeedbackBox extends React.Component<PropsType, StateType> {
     }
   }
 
-  getFeedbackData = (selectedFeedbackOption: FeedbackDropdownType, comment: string): FeedbackDataType => {
-    const {id, city, language, alias, query, isPositiveRatingSelected} = this.props
-
+  getFeedbackData = (selectedFeedbackOption: FeedbackDropdownItem, comment: string): FeedbackDataType => {
+    const {location, query, isPositiveRatingSelected, id, alias} = this.props
+    const {city, language} = location.payload
     return {
       feedbackType: selectedFeedbackOption.feedbackType,
       isPositiveRating: isPositiveRatingSelected,
@@ -150,8 +125,10 @@ class FeedbackBox extends React.Component<PropsType, StateType> {
     FeedbackEndpoint.postData(this.getFeedbackData(selectedFeedbackOption, comment))
   }
 
-  getFeedbackOptions = (): Array<FeedbackDropdownType> => {
-    const {cities, city, t} = this.props
+  getFeedbackOptions = (): Array<FeedbackDropdownItem> => {
+    const {cities, location, t} = this.props
+    const {city} = location.payload
+
     const options = []
     const currentPageFeedbackLabel = this.getCurrentPageFeedbackLabel()
     if (currentPageFeedbackLabel) {
@@ -167,21 +144,22 @@ class FeedbackBox extends React.Component<PropsType, StateType> {
     return options
   }
 
-  getFeedbackOption = (label: string, feedbackType: string | null): FeedbackDropdownType =>
-    ({value: label, feedbackType, label})
+  getFeedbackOption = (label: string, feedbackType: ?string): FeedbackDropdownItem =>
+    new FeedbackDropdownItem(label, feedbackType)
 
   getCurrentPageFeedbackLabel = (): ?string => {
-    const {route, id, alias, title, query, t} = this.props
+    const {location, id, alias, title, query, t} = this.props
+    const type = location.type
 
-    if (route === CATEGORIES_ROUTE && id && title) {
+    if (type === CATEGORIES_ROUTE && id && title) {
       return `${t('contentOfPage')} '${title}'`
-    } else if (route === EVENTS_ROUTE && id && title) {
+    } else if (type === EVENTS_ROUTE && id && title) {
       return `${t('news')} '${title}'`
-    } else if (route === EXTRAS_ROUTE && alias && title) {
+    } else if (type === EXTRAS_ROUTE && alias && title) {
       return `${t('extra')} '${title}'`
-    } else if (route === SEARCH_ROUTE && query) {
+    } else if (type === SEARCH_ROUTE && query) {
       return `${t('searchFor')} '${query}'`
-    } else if (route === DISCLAIMER_ROUTE) {
+    } else if (type === DISCLAIMER_ROUTE) {
       return `${t('disclaimer')}`
     } else {
       return null
@@ -189,10 +167,10 @@ class FeedbackBox extends React.Component<PropsType, StateType> {
   }
 
   getCurrentPageFeedbackType = (): string | null => {
-    const {route} = this.props
-    if (route === SEARCH_ROUTE) {
+    const {type} = this.props.location
+    if (type === SEARCH_ROUTE) {
       return SEARCH_FEEDBACK_TYPE
-    } else if (route === EXTRAS_ROUTE) {
+    } else if (type === EXTRAS_ROUTE) {
       return EXTRA_FEEDBACK_TYPE
     } else {
       return PAGE_FEEDBACK_TYPE
@@ -201,27 +179,24 @@ class FeedbackBox extends React.Component<PropsType, StateType> {
 
   render () {
     const {selectedFeedbackOption, feedbackOptions, comment} = this.state
-    const {t, isPositiveRatingSelected, pathname, commentMessageOverride, hideHeader} = this.props
+    const {t, isPositiveRatingSelected, location, commentMessageOverride, hideHeader} = this.props
     return (
       <StyledFeedbackBox>
         {!hideHeader && (
-          <React.Fragment>
-            <Header>
-              <Title>{t('feedback')}</Title>
-              <CloseButton to={pathname}>x</CloseButton>
-            </Header>
-            <Description>{t('feedbackType')}</Description>
-            <Dropdown
-              value={selectedFeedbackOption}
-              options={feedbackOptions}
-              onChange={this.onFeedbackOptionChanged} />
-          </React.Fragment>
+          <FeedbackHeader
+            location={location}
+            selectedFeedbackOption={selectedFeedbackOption}
+            feedbackOptions={feedbackOptions}
+            onFeedbackOptionChanged={this.onFeedbackOptionChanged} />
         )}
-        <Description>
-          {commentMessageOverride || (isPositiveRatingSelected ? t('positiveComment') : t('negativeComment'))}
-        </Description>
-        <CommentField rows={3} value={comment} onChange={this.onCommentChanged} />
-        <SubmitButton to={pathname} onClick={this.onSubmit}>{t('send')}</SubmitButton>
+        <FeedbackComment
+          comment={comment}
+          commentMessageOverride={commentMessageOverride}
+          isPositiveRatingSelected={isPositiveRatingSelected}
+          onCommentChanged={this.onCommentChanged} />
+        <SubmitButton to={goToFeedback(location)} onClick={this.onSubmit}>
+          {t('send')}
+        </SubmitButton>
       </StyledFeedbackBox>
     )
   }
