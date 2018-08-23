@@ -4,6 +4,7 @@ const AssetsPlugin = require('assets-webpack-plugin')
 const babelConfig = require('../.babelrc.js')
 const getVersion = require('git-repo-version')
 const StyleLintPlugin = require('stylelint-webpack-plugin')
+const babelEnvDeps = require('webpack-babel-env-deps')
 
 const isDebug = global.DEBUG === false ? false : !process.argv.includes('--release')
 const useHMR = !!global.HMR // Hot Module Replacement (HMR)
@@ -69,7 +70,7 @@ const config = {
     rules: [
       {
         test: /\.jsx?$/,
-        exclude: /\.\.\/node_modules\/(?!query-string)/, // https://github.com/babel/babel-loader/issues/171
+        exclude: new RegExp(/\.\./ + babelEnvDeps.exclude()),
         loader: 'babel-loader',
         options: babelConfig
       },
