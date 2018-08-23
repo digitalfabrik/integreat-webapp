@@ -69,7 +69,7 @@ const config = {
     rules: [
       {
         test: /\.jsx?$/,
-        include: [path.resolve(__dirname, '../src')],
+        include: [path.resolve(__dirname, isDebug ? '../src' : '../')],
         loader: 'babel-loader',
         options: babelConfig
       },
