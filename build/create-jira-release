@@ -1,0 +1,80 @@
+#!/usr/bin/env node
+
+const { program } = require('commander')
+const OAuth = require('oauth').OAuth
+
+const JIRA_URL = 'https://issues.integreat-app.de'
+const OAUTH_URL = `${JIRA_URL}/plugins/servlet/oauth`
+
+program
+  .option('-d, --debug', 'enable extreme logging')
+  .requiredOption('--version <version>', 'version name of the new release')
+  .requiredOption('--private-key <private-key>', 'version name of the new release')
+  .requiredOption('--consumer-key <consumer-key>', 'version name of the new release')
+
+const authenticate = async (consumerKey, privateKeyBase64) => {
+  const privateKey = Buffer.from(privateKeyBase64, 'base64').toString('ascii')
+
+  // https://github.com/mateuszdargacz/-atlassian-oauth-examples-nodeJS/blob/2b00cd32c494ab8e25b6536bc61a87c28e6b1ce4/index.js#L11
+  OAuth.prototype.get = (url, oauthToken, oauthTokenSecret, callback, postContentType) => {
+    return this._performSecureRequest(oauthToken, oauthTokenSecret, 'GET', url, null, '', postContentType, callback)
+  }
+
+  const consumer = new OAuth(
+    `${OAUTH_URL}/request-token`,
+    `${OAUTH_URL}/access-token`,
+    consumerKey,
+    privateKey,
+    '1.0',
+    `${OAUTH_URL}/authorize`,
+    'RSA-SHA1'
+  )
+
+  const { oAuthRequestToken, oAuthRequestTokenSecret } = await new Promise((resolve, reject) =>
+    consumer.getOAuthRequestToken((error, oAuthRequestToken, oAuthRequestTokenSecret) => {
+      console.log('error', error)
+      console.log('oAuthToken', oAuthRequestToken)
+      console.log('oAuthTokenSecret', oAuthRequestTokenSecret)
+
+      if (error) {
+        reject(error)
+      } else {
+        resolve({ oAuthRequestToken, oAuthRequestTokenSecret })
+      }
+    })
+  )
+
+  const { oAuthAccessToken, oAuthAccessTokenSecret } = await new Promise((resolve, reject) =>
+    consumer.getOAuthAccessToken(
+      oAuthRequestToken,
+      oAuthRequestTokenSecret,
+      'yZ2gQc',
+      (error, oAuthAccessToken, oAuthAccessTokenSecret) => {
+        console.log('error', error)
+        console.log('oAuthToken', oAuthAccessToken)
+        console.log('oAuthTokenSecret', oAuthAccessTokenSecret)
+
+        if (error) {
+          reject(error)
+        } else {
+          resolve({ oAuthAccessToken, oAuthAccessTokenSecret })
+        }
+      })
+  )
+}
+
+program
+  .command('authenticate')
+  .description('bump the current versionName (and versionCode if available) and commit to github')
+  .action(async () => {
+    try {
+      const { consumerKey, privateKey } = program
+
+      await authenticate(consumerKey, privateKey)
+    } catch (e) {
+      console.error(e)
+      process.exit(2)
+    }
+  })
+
+program.parse(process.argv)
