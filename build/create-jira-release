@@ -1,79 +1,119 @@
 #!/usr/bin/env node
 
 const { program } = require('commander')
+const fetch = require('node-fetch')
 const OAuth = require('oauth').OAuth
 
 const JIRA_URL = 'https://issues.integreat-app.de'
-const OAUTH_URL = `${JIRA_URL}/plugins/servlet/oauth`
+const JIRA_PROJECT = 'WEBAPP'
 
 program
   .option('-d, --debug', 'enable extreme logging')
-  .requiredOption('--version <version>', 'version name of the new release')
-  .requiredOption('--private-key <private-key>', 'version name of the new release')
-  .requiredOption('--consumer-key <consumer-key>', 'version name of the new release')
+  .requiredOption('--version-name <version-name>', 'version name of the new release')
+  .requiredOption('--access-token <access-token>', 'version name of the new release')
+  .requiredOption('--private-key <privateKey>')
+  .requiredOption('--consumer-key <consumer-key>')
 
-const authenticate = async (consumerKey, privateKeyBase64) => {
+const initializeOAuth = (privateKeyBase64, consumerKey) => {
   const privateKey = Buffer.from(privateKeyBase64, 'base64').toString('ascii')
 
-  // https://github.com/mateuszdargacz/-atlassian-oauth-examples-nodeJS/blob/2b00cd32c494ab8e25b6536bc61a87c28e6b1ce4/index.js#L11
-  OAuth.prototype.get = (url, oauthToken, oauthTokenSecret, callback, postContentType) => {
-    return this._performSecureRequest(oauthToken, oauthTokenSecret, 'GET', url, null, '', postContentType, callback)
-  }
-
-  const consumer = new OAuth(
-    `${OAUTH_URL}/request-token`,
-    `${OAUTH_URL}/access-token`,
+  return new OAuth(
+    '',
+    '',
     consumerKey,
     privateKey,
     '1.0',
-    `${OAUTH_URL}/authorize`,
+    '',
     'RSA-SHA1'
   )
+}
 
-  const { oAuthRequestToken, oAuthRequestTokenSecret } = await new Promise((resolve, reject) =>
-    consumer.getOAuthRequestToken((error, oAuthRequestToken, oAuthRequestTokenSecret) => {
-      console.log('error', error)
-      console.log('oAuthToken', oAuthRequestToken)
-      console.log('oAuthTokenSecret', oAuthRequestTokenSecret)
+const postToJira = async (path, body, accessToken, privateKeyBase64, consumerKey) => {
+  const consumer = initializeOAuth(privateKeyBase64, consumerKey)
 
-      if (error) {
-        reject(error)
-      } else {
-        resolve({ oAuthRequestToken, oAuthRequestTokenSecret })
-      }
-    })
+  await new Promise((resolve, reject) => consumer.post(
+    `${JIRA_URL}${path}`,
+    accessToken,
+    '',
+    JSON.stringify(body),
+    'application/json',
+    (error, response) => error ? reject(error) : resolve(response)
+  ))
+}
+
+const putToJira = async (path, body, accessToken, privateKeyBase64, consumerKey) => {
+  const consumer = initializeOAuth(privateKeyBase64, consumerKey)
+
+  await new Promise((resolve, reject) => consumer.put(
+    `${JIRA_URL}${path}`,
+    accessToken,
+    '',
+    JSON.stringify(body),
+    'application/json',
+    (error, response) => error ? reject(error) : resolve(response)
+  ))
+}
+
+const getFromJira = async path => {
+  const response = await fetch(`${JIRA_URL}${path}`)
+  return response.json()
+}
+
+const createRelease = async (versionName, accessToken, privateKey, consumerKey) => {
+  const date = new Date()
+  const newReleaseDate = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`
+
+  // Create a new jira version
+  await postToJira('/rest/api/2/version', {
+    name: versionName,
+    released: true,
+    releaseDate: newReleaseDate,
+    project: JIRA_PROJECT
+  }, accessToken, privateKey, consumerKey)
+
+  // Get the new and the last release
+  const { values: versions } = await getFromJira(
+    `/rest/api/2/project/${JIRA_PROJECT}/version?orderBy=-releaseDate&maxResults=2`
   )
 
-  const { oAuthAccessToken, oAuthAccessTokenSecret } = await new Promise((resolve, reject) =>
-    consumer.getOAuthAccessToken(
-      oAuthRequestToken,
-      oAuthRequestTokenSecret,
-      'yZ2gQc',
-      (error, oAuthAccessToken, oAuthAccessTokenSecret) => {
-        console.log('error', error)
-        console.log('oAuthToken', oAuthAccessToken)
-        console.log('oAuthTokenSecret', oAuthAccessTokenSecret)
+  const lastVersion = versions[1]
+  const lastDate = lastVersion.releaseDate
+  const newVersion = versions[0]
 
-        if (error) {
-          reject(error)
-        } else {
-          resolve({ oAuthAccessToken, oAuthAccessTokenSecret })
+  // Get all issues which should be part of the new release
+  const query = `project = integreat-webapp AND fixVersion IS EMPTY AND resolution = Done AND resolutiondate > ${lastDate}`
+  const { issues } = await getFromJira(`/rest/api/2/search?jql=${query}&fields=id`)
+
+  // Set fixVersion for all issues
+  await Promise.all(issues
+    .map(issue => {
+      const issueId = issue.id
+
+      const body = {
+        update: {
+          fixVersions: [{
+            set: [{
+              id: newVersion.id
+            }]
+          }]
         }
-      })
+      }
+      return putToJira(`/rest/api/2/issue/${issueId}?notifyUsers=false`, body, accessToken, privateKey, consumerKey)
+    })
   )
 }
 
 program
-  .command('authenticate')
-  .description('bump the current versionName (and versionCode if available) and commit to github')
+  .command('createRelease')
+  .description('create a new release on jira and assign all issues resolved since the last release')
   .action(async () => {
     try {
-      const { consumerKey, privateKey } = program
+      const { accessToken, versionName, privateKey, consumerKey } = program
 
-      await authenticate(consumerKey, privateKey)
+      await createRelease(versionName, accessToken, privateKey, consumerKey)
     } catch (e) {
       console.error(e)
-      process.exit(2)
+      process.exit(1)
     }
   })
 
