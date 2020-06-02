@@ -18,10 +18,10 @@ const moveReleaseNotes = async (newVersion, { deliverinoPrivateKey, owner, repo,
   // const versionFileContent = await appOctokit.repos.getContents({ owner, repo, path: releaseNotePath, ref: branch })
   // console.log(versionFileContent)
 
-  const commit = await appOctokit.git.getCommit({ owner, repo, commit_sha: commitSha })
-  console.log('commit', commit)
+  const lastCommit = await appOctokit.git.getCommit({ owner, repo, commit_sha: commitSha })
+  console.log('commit', lastCommit)
 
-  const rootTreeSha = commit.data.tree.sha
+  const rootTreeSha = lastCommit.data.tree.sha
   const rootTree = await appOctokit.git.getTree({ owner, repo, tree_sha: rootTreeSha })
   console.log('tree', rootTree)
 
@@ -40,8 +40,26 @@ const moveReleaseNotes = async (newVersion, { deliverinoPrivateKey, owner, repo,
   })
 
   console.log('movedFiles', dirChanges)
-  const newTree = await appOctokit.git.createTree({ owner, repo, tree: dirChanges })
-  console.log('newTree', newTree)
+  const moveTree = await appOctokit.git.createTree({ owner, repo, tree: dirChanges })
+  console.log('newTree', moveTree)
+
+  const moveCommit = await appOctokit.git.createCommit({
+    owner,
+    repo,
+    message: `Move release notes to ${newVersion}`,
+    tree: moveTree.data.sha,
+    parents: [commitSha]
+  })
+  console.log(moveCommit)
+
+  const updateRef = await appOctokit.git.updateRef({
+    owner,
+    repo,
+    ref: branch,
+    sha: moveCommit.data.sha
+  })
+
+  console.log(updateRef)
 
   // const { versionCode, versionName } = newVersion
   // const contentBase64 = Buffer.from(JSON.stringify(newVersion)).toString('base64')
