@@ -38,7 +38,8 @@ const moveReleaseNotes = async (newVersion, { deliverinoPrivateKey, owner, repo,
   console.log('movedFiles', dirChanges)
   const newTree = await appOctokit.git.createTree({ owner, repo, tree: dirChanges, base_tree: releaseNoteTreeSha })
   console.log('newTree', newTree)
-  const deleteUnreleased = [{ ...rest, sha: null }]
+  const deleteUnreleased = [{ ...rest, sha: undefined }]
+  console.log('deleteUnreleased', deleteUnreleased)
   const deleteTree = await appOctokit.git.createTree({ owner, repo, tree: deleteUnreleased, base_tree: releaseNoteTreeSha })
   console.log('deleteTree', deleteTree)
 
