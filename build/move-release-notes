@@ -31,16 +31,12 @@ const moveReleaseNotes = async (newVersion, { deliverinoPrivateKey, owner, repo,
   const releaseNoteTree = await appOctokit.git.getTree({ owner, repo, tree_sha: releaseNoteTreeSha })
   console.log('releaseNoteTree', releaseNoteTree)
 
-  const movedFiles = releaseNoteTree.data.tree.map(it => {
-    if (it.path === 'unreleased') {
-      console.log('unreleased', it)
-      return { ...it, path: newVersion }
-    }
-    return it
-  })
+  const { size, url, ...rest } = releaseNoteTree.data.tree.find(it => it.path === 'unreleased')
+  const dirChanges = [{ ...rest, path: newVersion }, { ...rest, sha: null }]
+  console.log(dirChanges)
 
-  console.log('movedFiles', movedFiles)
-  const newTree = await appOctokit.git.createTree({ owner, repo, tree: movedFiles, base_tree: releaseNoteTreeSha })
+  console.log('movedFiles', dirChanges)
+  const newTree = await appOctokit.git.createTree({ owner, repo, tree: dirChanges, base_tree: releaseNoteTreeSha })
   console.log(newTree)
 
   // const { versionCode, versionName } = newVersion
