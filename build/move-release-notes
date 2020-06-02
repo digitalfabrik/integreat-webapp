@@ -23,7 +23,7 @@ const moveReleaseNotes = async (newVersion, { releaseNotePath, deliverinoPrivate
   const commit = await appOctokit.git.getCommit({ owner, repo, commit_sha: commitSha })
   console.log('commit', commit)
 
-  const treeSha = commit.tree.sha
+  const treeSha = commit.data.tree.sha
 
   const tree = await appOctokit.git.getTree({ owner, repo, tree_sha: treeSha })
   console.log('tree', tree)
