@@ -100,6 +100,9 @@ jobs:
     shell: /bin/bash -eo pipefail
     steps:
       - run:
+          name: Move release notes
+          command: build/move-release-notes move --deliverino-private-key ${DELIVERINO_PRIVATE_KEY} --owner ${CIRCLE_PROJECT_USERNAME} --repo ${CIRCLE_PROJECT_REPONAME} --branch ${CIRCLE_BRANCH} --new-version=2020.6.1
+      - run:
           name: "Show current CPU count"
           command: |
             echo "CPU count is ${TOTAL_CPUS}"
@@ -218,7 +221,7 @@ jobs:
           steps:
             - run:
                 name: Bump version
-                command: tools/bump-version bump-version --deliverino-private-key ${DELIVERINO_PRIVATE_KEY} --owner ${CIRCLE_PROJECT_USERNAME} --repo ${CIRCLE_PROJECT_REPONAME} --branch ${CIRCLE_BRANCH}
+                command: build/bump-version bump-version --deliverino-private-key ${DELIVERINO_PRIVATE_KEY} --owner ${CIRCLE_PROJECT_USERNAME} --repo ${CIRCLE_PROJECT_REPONAME} --branch ${CIRCLE_BRANCH}
       - unless:
           condition:
             equal: [ "integreat", << parameters.build_config >> ]

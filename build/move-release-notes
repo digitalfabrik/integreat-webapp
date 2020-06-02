@@ -1,0 +1,69 @@
+#!/usr/bin/env node
+
+import authenticate from './github-authentication'
+const { program } = require('commander')
+
+program
+  .option('-d, --debug', 'enable extreme logging')
+  .option('--dry-run', 'prevent actual commit of the updated version.json to github')
+  .option('--release-note-path <release-note-path>', 'the location of the release notes', 'release-notes')
+  .requiredOption('--deliverino-private-key <deliverino-private-key>', 'private key of the deliverino github app in pem format with base64 encoding')
+  .requiredOption('--owner <owner>', 'owner of the current repository, usually "Integreat"')
+  .requiredOption('--repo <repo>', 'the current repository, usually "integreat-webapp" or "integreat-react-native-app"')
+  .requiredOption('--branch <branch>', 'the current branch')
+  .requiredOption('---new-version <new-version>', 'the new version name')
+
+const moveReleaseNotes = async (newVersion, { releaseNotePath, deliverinoPrivateKey, owner, repo, branch }) => {
+  const appOctokit = authenticate({ deliverinoPrivateKey, owner, repo })
+  const versionFileContent = await appOctokit.repos.getContents({ owner, repo, path: releaseNotePath, ref: branch })
+
+  console.log(versionFileContent)
+
+  // const { versionCode, versionName } = newVersion
+  // const contentBase64 = Buffer.from(JSON.stringify(newVersion)).toString('base64')
+  //
+  // const message = versionCode
+  //   ? `Bump version name to ${versionName} and version code to ${versionCode}\n[skip ci]`
+  //   : `Bump version name to ${versionName}\n[skip ci]`
+  //
+  // await appOctokit.repos.createOrUpdateFile({
+  //   owner,
+  //   repo,
+  //   path: versionFile,
+  //   content: contentBase64,
+  //   branch,
+  //   message,
+  //   sha: versionFileContent.data.sha
+  // })
+  //
+  // console.debug(`Bumped version successfully commited with message "${message}"`)
+}
+
+program
+  .command('move')
+  .description('move the release notes in <release-note-path> to the subdirectory <new-version>')
+  .action(async () => {
+    try {
+      const { dryRun, newVersion, releaseNotePath, deliverinoPrivateKey, owner, repo, branch } = program
+      if (!dryRun) {
+        if (!deliverinoPrivateKey) {
+          throw new Error('deliverino private key not specified')
+        } else if (!owner) {
+          throw new Error('owner not specified')
+        } else if (!repo) {
+          throw new Error('repo not specified')
+        } else if (!branch) {
+          throw new Error('branch not specified')
+        }
+      }
+
+      if (!dryRun) {
+        await moveReleaseNotes(newVersion, { releaseNotePath, deliverinoPrivateKey, owner, repo, branch })
+      }
+    } catch (e) {
+      console.error(e)
+      process.exit(1)
+    }
+  })
+
+program.parse(process.argv)
