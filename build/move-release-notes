@@ -32,7 +32,7 @@ const moveReleaseNotes = async (newVersion, { deliverinoPrivateKey, owner, repo,
   console.log('releaseNoteTree', releaseNoteTree)
 
   const { size, url, ...rest } = releaseNoteTree.data.tree.find(it => it.path === 'unreleased')
-  const dirChanges = [{ ...rest, path: newVersion }, { ...rest, sha: null }]
+  const dirChanges = [{ ...rest, path: newVersion }]
   console.log(dirChanges)
 
   console.log('movedFiles', dirChanges)
