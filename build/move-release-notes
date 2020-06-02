@@ -11,7 +11,7 @@ program
   .requiredOption('--owner <owner>', 'owner of the current repository, usually "Integreat"')
   .requiredOption('--repo <repo>', 'the current repository, usually "integreat-webapp" or "integreat-react-native-app"')
   .requiredOption('--branch <branch>', 'the current branch')
-  .requiredOption('---new-version <new-version>', 'the new version name')
+  .requiredOption('--new-version <new-version>', 'the new version name')
 
 const moveReleaseNotes = async (newVersion, { releaseNotePath, deliverinoPrivateKey, owner, repo, branch }) => {
   const appOctokit = authenticate({ deliverinoPrivateKey, owner, repo })
