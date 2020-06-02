@@ -39,7 +39,7 @@ const calculateNewVersion = versionFilePath => {
 }
 
 const commitVersionBump = async (newVersion, { versionFile, deliverinoPrivateKey, owner, repo, branch }) => {
-  const appOctokit = authenticate({ deliverinoPrivateKey, owner, repo })
+  const appOctokit = await authenticate({ deliverinoPrivateKey, owner, repo })
   const versionFileContent = await appOctokit.repos.getContents({ owner, repo, path: versionFile, ref: branch })
 
   const { versionCode, versionName } = newVersion
