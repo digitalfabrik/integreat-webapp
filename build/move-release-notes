@@ -55,30 +55,11 @@ const moveReleaseNotes = async (newVersion, { deliverinoPrivateKey, owner, repo,
   const updateRef = await appOctokit.git.updateRef({
     owner,
     repo,
-    ref: branch,
+    ref: `heads/${branch}`,
     sha: moveCommit.data.sha
   })
 
   console.log(updateRef)
-
-  // const { versionCode, versionName } = newVersion
-  // const contentBase64 = Buffer.from(JSON.stringify(newVersion)).toString('base64')
-  //
-  // const message = versionCode
-  //   ? `Bump version name to ${versionName} and version code to ${versionCode}\n[skip ci]`
-  //   : `Bump version name to ${versionName}\n[skip ci]`
-  //
-  // await appOctokit.repos.createOrUpdateFile({
-  //   owner,
-  //   repo,
-  //   path: versionFile,
-  //   content: contentBase64,
-  //   branch,
-  //   message,
-  //   sha: versionFileContent.data.sha
-  // })
-  //
-  // console.debug(`Bumped version successfully commited with message "${message}"`)
 }
 
 program
