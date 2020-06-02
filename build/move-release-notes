@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import authenticate from './github-authentication'
+const authenticate = require('./github-authentication')
 const { program } = require('commander')
 
 program
