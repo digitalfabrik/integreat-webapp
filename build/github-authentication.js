@@ -12,4 +12,4 @@ const authenticate = async ({ deliverinoPrivateKey, owner, repo }) => {
   return new Octokit({ auth: token })
 }
 
-export default authenticate
+module.exports = authenticate
