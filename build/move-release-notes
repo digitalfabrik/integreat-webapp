@@ -11,13 +11,22 @@ program
   .requiredOption('--owner <owner>', 'owner of the current repository, usually "Integreat"')
   .requiredOption('--repo <repo>', 'the current repository, usually "integreat-webapp" or "integreat-react-native-app"')
   .requiredOption('--branch <branch>', 'the current branch')
+  .requiredOption('--commit-sha <commit-sha>', 'the sha1 of the current commit')
   .requiredOption('--new-version <new-version>', 'the new version name')
 
-const moveReleaseNotes = async (newVersion, { releaseNotePath, deliverinoPrivateKey, owner, repo, branch }) => {
+const moveReleaseNotes = async (newVersion, { releaseNotePath, deliverinoPrivateKey, owner, repo, branch, commitSha }) => {
   const appOctokit = await authenticate({ deliverinoPrivateKey, owner, repo })
   const versionFileContent = await appOctokit.repos.getContents({ owner, repo, path: releaseNotePath, ref: branch })
 
   console.log(versionFileContent)
+
+  const commit = await appOctokit.git.getCommit({ owner, repo, commit_sha: commitSha })
+  console.log('commit', commit)
+
+  const treeSha = commit.tree.sha
+
+  const tree = await appOctokit.git.getTree({ owner, repo, tree_sha: treeSha })
+  console.log('tree', tree)
 
   // const { versionCode, versionName } = newVersion
   // const contentBase64 = Buffer.from(JSON.stringify(newVersion)).toString('base64')
@@ -44,7 +53,7 @@ program
   .description('move the release notes in <release-note-path> to the subdirectory <new-version>')
   .action(async () => {
     try {
-      const { dryRun, newVersion, releaseNotePath, deliverinoPrivateKey, owner, repo, branch } = program
+      const { dryRun, newVersion, releaseNotePath, deliverinoPrivateKey, owner, repo, branch, commitSha } = program
       if (!dryRun) {
         if (!deliverinoPrivateKey) {
           throw new Error('deliverino private key not specified')
@@ -58,7 +67,7 @@ program
       }
 
       if (!dryRun) {
-        await moveReleaseNotes(newVersion, { releaseNotePath, deliverinoPrivateKey, owner, repo, branch })
+        await moveReleaseNotes(newVersion, { releaseNotePath, deliverinoPrivateKey, owner, repo, branch, commitSha })
       }
     } catch (e) {
       console.error(e)
