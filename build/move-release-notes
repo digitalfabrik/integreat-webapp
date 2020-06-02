@@ -9,7 +9,7 @@ program
   .requiredOption('--deliverino-private-key <deliverino-private-key>', 'private key of the deliverino github app in pem format with base64 encoding')
   .requiredOption('--owner <owner>', 'owner of the current repository, usually "Integreat"')
   .requiredOption('--repo <repo>', 'the current repository, usually "integreat-webapp" or "integreat-react-native-app"')
-  .requiredOption('--branch <branch>', 'the current branch')
+  // .requiredOption('--branch <branch>', 'the current branch')
   .requiredOption('--commit-sha <commit-sha>', 'the sha1 of the current commit')
   .requiredOption('--new-version <new-version>', 'the new version name')
 
@@ -26,7 +26,7 @@ const moveReleaseNotes = async (newVersion, { deliverinoPrivateKey, owner, repo,
   console.log('tree', rootTree)
 
   console.log('tree tree', rootTree.data.tree)
-  const releaseNoteTreeSha = rootTree.data.tree.filter(it => it.path === 'release-notes').sha
+  const releaseNoteTreeSha = rootTree.data.tree.find(it => it.path === 'release-notes').sha
   console.log('releaseNoteTreeSha', releaseNoteTreeSha)
   const releaseNoteTree = await appOctokit.git.getTree({ owner, repo, tree_sha: releaseNoteTreeSha })
   console.log('releaseNoteTree', releaseNoteTree)
