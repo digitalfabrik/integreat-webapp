@@ -31,17 +31,17 @@ const moveReleaseNotes = async (newVersion, { deliverinoPrivateKey, owner, repo,
   const releaseNoteTree = await appOctokit.git.getTree({ owner, repo, tree_sha: releaseNoteTreeSha })
   console.log('releaseNoteTree', releaseNoteTree)
 
-  const { size, url, ...rest } = releaseNoteTree.data.tree.find(it => it.path === 'unreleased')
-  const dirChanges = [{ ...rest, path: newVersion }]
-  console.log(dirChanges)
+  const dirChanges = releaseNoteTree.data.tree.map(it => {
+    const { size, url, ...rest } = it
+    if (it.path === 'unreleased') {
+      return { ...rest, path: newVersion }
+    }
+    return it
+  })
 
   console.log('movedFiles', dirChanges)
-  const newTree = await appOctokit.git.createTree({ owner, repo, tree: dirChanges, base_tree: releaseNoteTreeSha })
+  const newTree = await appOctokit.git.createTree({ owner, repo, tree: dirChanges })
   console.log('newTree', newTree)
-  const deleteUnreleased = [{ ...rest, sha: undefined }]
-  console.log('deleteUnreleased', deleteUnreleased)
-  const deleteTree = await appOctokit.git.createTree({ owner, repo, tree: deleteUnreleased, base_tree: releaseNoteTreeSha })
-  console.log('deleteTree', deleteTree)
 
   // const { versionCode, versionName } = newVersion
   // const contentBase64 = Buffer.from(JSON.stringify(newVersion)).toString('base64')
