@@ -6,7 +6,6 @@ const { program } = require('commander')
 program
   .option('-d, --debug', 'enable extreme logging')
   .option('--dry-run', 'prevent actual commit of the updated version.json to github')
-  .option('--release-note-path <release-note-path>', 'the location of the release notes', 'release-notes')
   .requiredOption('--deliverino-private-key <deliverino-private-key>', 'private key of the deliverino github app in pem format with base64 encoding')
   .requiredOption('--owner <owner>', 'owner of the current repository, usually "Integreat"')
   .requiredOption('--repo <repo>', 'the current repository, usually "integreat-webapp" or "integreat-react-native-app"')
@@ -14,19 +13,33 @@ program
   .requiredOption('--commit-sha <commit-sha>', 'the sha1 of the current commit')
   .requiredOption('--new-version <new-version>', 'the new version name')
 
-const moveReleaseNotes = async (newVersion, { releaseNotePath, deliverinoPrivateKey, owner, repo, branch, commitSha }) => {
+const moveReleaseNotes = async (newVersion, { deliverinoPrivateKey, owner, repo, branch, commitSha }) => {
   const appOctokit = await authenticate({ deliverinoPrivateKey, owner, repo })
-  const versionFileContent = await appOctokit.repos.getContents({ owner, repo, path: releaseNotePath, ref: branch })
-
-  console.log(versionFileContent)
+  // const versionFileContent = await appOctokit.repos.getContents({ owner, repo, path: releaseNotePath, ref: branch })
+  // console.log(versionFileContent)
 
   const commit = await appOctokit.git.getCommit({ owner, repo, commit_sha: commitSha })
   console.log('commit', commit)
 
-  const treeSha = commit.data.tree.sha
+  const rootTreeSha = commit.data.tree.sha
+  const rootTree = await appOctokit.git.getTree({ owner, repo, tree_sha: rootTreeSha })
+  console.log('tree', rootTree)
 
-  const tree = await appOctokit.git.getTree({ owner, repo, tree_sha: treeSha })
-  console.log('tree', tree)
+  const releaseNoteTreeSha = rootTree.data.tree.filter(it => it.path === 'release-notes')
+  const releaseNoteTree = await appOctokit.git.getTree({ owner, repo, tree_sha: releaseNoteTreeSha })
+  console.log('releaseNoteTree', releaseNoteTree)
+
+  const movedFiles = releaseNoteTree.data.tree.map(it => {
+    if (it.path === 'unreleased') {
+      console.log('unreleased', it)
+      return { ...it, path: newVersion }
+    }
+    return it
+  })
+
+  console.log('movedFiles', movedFiles)
+  const newTree = await appOctokit.git.createTree({ owner, repo, tree: movedFiles, base_tree: releaseNoteTreeSha })
+  console.log(newTree)
 
   // const { versionCode, versionName } = newVersion
   // const contentBase64 = Buffer.from(JSON.stringify(newVersion)).toString('base64')
@@ -53,7 +66,7 @@ program
   .description('move the release notes in <release-note-path> to the subdirectory <new-version>')
   .action(async () => {
     try {
-      const { dryRun, newVersion, releaseNotePath, deliverinoPrivateKey, owner, repo, branch, commitSha } = program
+      const { dryRun, newVersion, deliverinoPrivateKey, owner, repo, branch, commitSha } = program
       if (!dryRun) {
         if (!deliverinoPrivateKey) {
           throw new Error('deliverino private key not specified')
@@ -67,7 +80,7 @@ program
       }
 
       if (!dryRun) {
-        await moveReleaseNotes(newVersion, { releaseNotePath, deliverinoPrivateKey, owner, repo, branch, commitSha })
+        await moveReleaseNotes(newVersion, { deliverinoPrivateKey, owner, repo, branch, commitSha })
       }
     } catch (e) {
       console.error(e)
