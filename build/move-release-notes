@@ -25,7 +25,8 @@ const moveReleaseNotes = async (newVersion, { deliverinoPrivateKey, owner, repo,
   const rootTree = await appOctokit.git.getTree({ owner, repo, tree_sha: rootTreeSha })
   console.log('tree', rootTree)
 
-  const releaseNoteTreeSha = rootTree.data.tree.filter(it => it.path === 'release-notes')
+  const releaseNoteTreeSha = rootTree.data.tree.filter(it => it.path === 'release-notes').sha
+  console.log('releaseNoteTreeSha', releaseNoteTreeSha)
   const releaseNoteTree = await appOctokit.git.getTree({ owner, repo, tree_sha: releaseNoteTreeSha })
   console.log('releaseNoteTree', releaseNoteTree)
 
