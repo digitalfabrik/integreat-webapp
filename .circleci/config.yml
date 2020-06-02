@@ -107,26 +107,26 @@ jobs:
           fingerprints:
             - "30:f4:98:9f:1c:72:d1:c0:17:9f:57:05:74:a6:44:50"
       - checkout
+      - restore_cache:
+          name: Restore Yarn Package Cache
+          keys:
+            - 2-yarn-{{ arch }}-{{ checksum "yarn.lock" }}
+            - 2-yarn-{{ arch }}-
+      - run:
+          name: Install Dependencies
+          command: yarn install --frozen-lockfile
+      - save_cache:
+          name: Save Yarn Package Cache
+          key: 2-yarn-{{ arch }}-{{ checksum "yarn.lock" }}
+          paths:
+            - ~/.cache/yarn
+            - node_modules
       - run:
           name: ls
           command: ls -A
       - run:
           name: Move release notes
           command: build/move-release-notes move --deliverino-private-key ${DELIVERINO_PRIVATE_KEY} --owner ${CIRCLE_PROJECT_USERNAME} --repo ${CIRCLE_PROJECT_REPONAME} --branch ${CIRCLE_BRANCH} --new-version=2020.6.1
-#      - restore_cache:
-#          name: Restore Yarn Package Cache
-#          keys:
-#            - 2-yarn-{{ arch }}-{{ checksum "yarn.lock" }}
-#            - 2-yarn-{{ arch }}-
-#      - run:
-#          name: Install Dependencies
-#          command: yarn install --frozen-lockfile
-#      - save_cache:
-#          name: Save Yarn Package Cache
-#          key: 2-yarn-{{ arch }}-{{ checksum "yarn.lock" }}
-#          paths:
-#            - ~/.cache/yarn
-#            - node_modules
 #      - run:
 #          name: Check linting
 #          command: yarn run lint
