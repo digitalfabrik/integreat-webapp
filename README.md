@@ -1,3 +1,5 @@
+# This repository has been migrated to [integreat-app](https://github.com/Integreat/integreat-app)
+
 [![Dependency Status](https://gemnasium.com/badges/github.com/Integreat/integreat-webapp.svg)](https://gemnasium.com/github.com/Integreat/integreat-webapp)
 versioning: ![versioning](https://img.shields.io/badge/calver-YYYY.MM.PATCH-22bfda.svg)
 
